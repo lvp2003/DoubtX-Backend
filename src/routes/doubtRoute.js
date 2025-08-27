@@ -37,6 +37,48 @@ route.get("/doubts", async (req, res) => {
   }
 });
 
+route.get("/doubts/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const doubt = await Doubt.findById(id)
+      .populate("createdBy", "name email")
+      .populate("assignedTutor", "name email");
+    res.status(200).json(doubt);
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+    console.log("error", error.message);
+  }
+});
+
+route.put("/doubts/:id", async (req, res) => {
+  const { id } = req.params;
+  const { title, description, assignedTutor } = req.body;
+  try {
+    const doubt = await Doubt.findByIdAndUpdate(
+      id,
+      { title, description, assignedTutor },
+      { new: true }
+    )
+      .populate("createdBy", "name email")
+      .populate("assignedTutor", "name email");
+    res.status(200).json({ message: "Doubt updated successfully", doubt });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+    console.log("error", error.message);
+  }
+});
+
+route.delete("/doubts/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const doubt = await Doubt.findByIdAndDelete(id);
+    res.status(200).json({ message: "doubt deleted successfully", doubt });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+    console.log("error", error.message);
+  }
+});
+
 module.exports = route;
 
 // route.get("/doubts", async (req, res) => {
