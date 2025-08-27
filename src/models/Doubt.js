@@ -1,6 +1,4 @@
 const { model, Schema } = require("mongoose");
-const { schema } = require("./user");
-
 const doubtSchema = new Schema(
   {
     title: {

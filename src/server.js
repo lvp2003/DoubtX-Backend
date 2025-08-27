@@ -3,9 +3,9 @@ const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
 require("dotenv").config();
-
+const userRoutes = require("./routes/userRoute");
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = 5000;
 
 // Validate required environment variables
 if (!process.env.MONGODB_URI) {
@@ -27,6 +27,8 @@ connectDB();
 app.get("/", (req, res) => {
   res.send("API is running");
 });
+// Routes
+app.use("/api/users", userRoutes);
 
 const server = app.listen(PORT, () => {
   console.log(`App is listening at port ${PORT}`);
