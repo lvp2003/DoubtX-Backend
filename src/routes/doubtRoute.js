@@ -2,7 +2,7 @@ const express = require("express");
 const route = express.Router();
 
 const Doubt = require("../models/Doubt");
-const auth = require("../middleware/auth");
+const auth = require("../middlewares/authMiddleware");
 route.post("/doubts", auth, async (req, res) => {
   try {
     const { title, description, createdBy, status } = req.body;
