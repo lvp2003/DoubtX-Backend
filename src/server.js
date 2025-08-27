@@ -4,6 +4,7 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 require("dotenv").config();
 const userRoutes = require("./routes/userRoute");
+const doubtRoutes = require("./routes/doubtRoute");
 const app = express();
 const PORT = 5000;
 
@@ -29,6 +30,7 @@ app.get("/", (req, res) => {
 });
 // Routes
 app.use("/api/users", userRoutes);
+app.use("/api", doubtRoutes);
 
 const server = app.listen(PORT, () => {
   console.log(`App is listening at port ${PORT}`);

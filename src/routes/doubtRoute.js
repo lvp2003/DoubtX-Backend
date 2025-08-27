@@ -2,8 +2,8 @@ const express = require("express");
 const route = express.Router();
 
 const Doubt = require("../models/Doubt");
-
-route.post("/doubts", async (req, res) => {
+const auth = require("../middleware/auth");
+route.post("/doubts", auth, async (req, res) => {
   try {
     const { title, description, createdBy, status } = req.body;
     if (!title || !description) {
@@ -25,7 +25,7 @@ route.post("/doubts", async (req, res) => {
   }
 });
 
-route.get("/doubts", async (req, res) => {
+route.get("/doubts", auth, async (req, res) => {
   try {
     const getAllDoubts = await Doubt.find({ status: "open" })
       .populate("createdBy", "name email ")
@@ -37,7 +37,7 @@ route.get("/doubts", async (req, res) => {
   }
 });
 
-route.get("/doubts/:id", async (req, res) => {
+route.get("/doubts/:id", auth, async (req, res) => {
   const { id } = req.params;
   try {
     const doubt = await Doubt.findById(id)
@@ -50,7 +50,7 @@ route.get("/doubts/:id", async (req, res) => {
   }
 });
 
-route.put("/doubts/:id", async (req, res) => {
+route.put("/doubts/:id", auth, async (req, res) => {
   const { id } = req.params;
   const { title, description, assignedTutor } = req.body;
   try {
@@ -68,7 +68,7 @@ route.put("/doubts/:id", async (req, res) => {
   }
 });
 
-route.delete("/doubts/:id", async (req, res) => {
+route.delete("/doubts/:id", auth, async (req, res) => {
   const { id } = req.params;
   try {
     const doubt = await Doubt.findByIdAndDelete(id);

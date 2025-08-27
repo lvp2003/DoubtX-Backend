@@ -1,8 +1,8 @@
 const express = require("express");
 const User = require("../models/user");
-
+const generateToken = require("../utils/generateToken");
 const router = express.Router();
-
+const auth = require("../middlewares/authMiddleware");
 router.post("/register", async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
@@ -21,7 +21,17 @@ router.post("/register", async (req, res) => {
       role,
     });
     await user.save();
-    res.status(201).json({ message: "User registered successfully" });
+    if (user) {
+      return res.status(201).json({
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        token: generateToken(user._id),
+      });
+    } else {
+      return res.status(400).json({ message: "User registration failed" });
+    }
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
     console.log("Error ", error.message);
@@ -45,7 +55,15 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Invalid password or email" });
     }
     // const { password: _, ...userData } = user.toObject();
-    res.status(200).json({ message: "Login successful", user });
+    // res.status(200).json({ message: "Login successful", user });
+
+    return res.status(201).json({
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      token: generateToken(user._id),
+    });
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
     console.log("Error ", error.message);
