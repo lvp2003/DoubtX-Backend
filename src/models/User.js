@@ -1,28 +1,30 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
-const userSchema = new mongoose.Schema(
+const bcrypt = require("bcryptjs");
+const userSchame = new mongoose.Schema(
   {
     name: {
       type: String,
       required: true,
       trim: true,
+      minlength: 2,
+      maxlength: 80,
     },
     email: {
       type: String,
       required: true,
-      trim: true,
-      lowercase: true,
       unique: true,
+      lowercase: true,
+      trim: true,
     },
     password: {
       type: String,
       required: true,
-      trim: true,
       minlength: 8,
+      trim: true,
     },
     role: {
       type: String,
-      enum: ["student", "tutor"],
+      enum: ["student", "tutor", "admin"],
       default: "student",
     },
   },
@@ -35,21 +37,9 @@ userSchema.pre("save", async function (next) {
 });
 
 userSchema.methods.comparePassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
+  const isMatch = await bcrypt.compare(enteredPassword, this.password);
+  return isMatch;
 };
 
-// userSchema.methods.toJSON = function () {
-//   const userObject = this.toObject();
-//   delete userObject.password;
-//   return userObject;
-// };
-
-userSchema.methods.toJSON = function () {
-  const userObject = this.toObject();
-  delete userObject.password;
-  return userObject;
-};
-
-const User = mongoose.model("User", userSchema);
-
+const User = mongoose.model("User", userSchame);
 module.exports = User;
