@@ -5,10 +5,16 @@ const doubtSchema = new Schema(
       type: String,
       required: true,
       trim: true,
+      minlength: 5,
+      maxlength: 100,
     },
     description: {
       type: String,
       required: true,
+      trim: true,
+    },
+    subject: {
+      type: String,
       trim: true,
     },
     createdBy: {
@@ -18,13 +24,17 @@ const doubtSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ["open", "in-progress", "resolved"],
+      enum: ["open", "assigned", "completed"],
       default: "open",
     },
     assignedTutor: {
       type: Schema.Types.ObjectId,
       ref: "User",
+      default: null,
       // required: true
+    },
+    tags: {
+      type: [{ type: String, trim: true }],
     },
   },
   { timestamps: true }
