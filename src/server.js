@@ -7,7 +7,7 @@ const userRoutes = require("./routes/userRoute");
 const doubtRoutes = require("./routes/doubtRoute");
 const app = express();
 const PORT = 5000;
-
+const { notFound, errorHandler } = require("./middlewares/errorMiddleware");
 // Validate required environment variables
 if (!process.env.MONGODB_URI) {
   console.error("Error: MONGODB_URI is not set in environment variables.");
@@ -19,9 +19,20 @@ app.use(cors());
 app.use(express.json());
 app.use(helmet());
 app.use(morgan("dev"));
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per windowMs
+  })
+);
+
+app.use(notFound);
+app.use(errorHandler);
 
 // Connect to MongoDB
 const connectDB = require("./config/db");
+const { default: rateLimit } = require("express-rate-limit");
+const { notFound } = require("./middlewares/errorMiddleware");
 connectDB();
 
 // Example route
